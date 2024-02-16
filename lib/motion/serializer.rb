@@ -6,6 +6,28 @@ require "active_support/message_encryptor"
 
 require "motion"
 
+module ActiveSupport
+  class MessageEncryptor
+    module NullVerifier # :nodoc:
+      def self.verify(value)\
+        value
+      end
+
+      def self.generate(value)
+        value
+      end
+    end
+
+    def encrypt_and_sign_old(value, expires_at: nil, expires_in: nil, purpose: nil)
+      (@verifier || NullVerifier).generate(encrypt(value))
+    end
+
+    def decrypt_and_verify_old(data, purpose: nil, **)
+      decrypt((@verifier || NullVerifier).verify(data))
+    end
+  end
+end
+
 module Motion
   class Serializer
     HASH_PEPPER = "Motion"
@@ -92,11 +114,11 @@ module Motion
     end
 
     def encrypt_and_sign(cleartext)
-      encryptor.encrypt_and_sign(cleartext)
+      encryptor.encrypt_and_sign_old(cleartext)
     end
 
     def decrypt_and_verify(cypertext)
-      encryptor.decrypt_and_verify(cypertext)
+      encryptor.decrypt_and_verify_old(cypertext)
     rescue ActiveSupport::MessageEncryptor::InvalidMessage,
       ActiveSupport::MessageVerifier::InvalidSignature
       raise InvalidSerializedStateError

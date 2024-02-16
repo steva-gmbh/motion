@@ -26,6 +26,8 @@ module Motion
 
         @asset_resolver_strategies
         @assets_environment
+
+        @compiler
       ].freeze
 
       STATE_IVAR_OBFUSCATION_PREFIX = "@__vc_"

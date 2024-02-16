@@ -23,3 +23,5 @@ yarn-debug.log*
 /spec/support/test_application/yarn-error.log
 /spec/support/test_application/yarn-debug.log*
 /spec/support/test_application/.yarn-integrity
+
+/.idea
